@@ -18,6 +18,25 @@ class Simulator:
         else:
             self.world = world
 
+    @staticmethod
+    def count_living_cells(neigbours):
+        living_cells = 0
+        for i in neigbours:
+            if i == 1:
+                living_cells = living_cells + 1
+        return living_cells
+
+    @staticmethod
+    def apply_rules(x, y, new_world, cell, amount_living_cells):
+        if (cell == 1) and (amount_living_cells == 2):
+            new_world.set(x, y, 1)
+        elif (cell == 1) and (amount_living_cells == 3):
+            new_world.set(x, y, 1)
+        elif (cell == 0) and (amount_living_cells == 3):
+            new_world.set(x, y, 1)
+        else:
+            new_world.set(x, y, 0)
+
     def update(self) -> World:
         """
         Updates the state of the world to the next generation. Uses rules for evolution.
@@ -25,27 +44,14 @@ class Simulator:
         :return: New state of the world.
         """
         self.generation += 1
-        new_gen = World(self.world.width, self.world.height)
-
+        new_world = World(self.world.width, self.world.height)
         for y in range(self.world.width):
             for x in range(self.world.height):
                 neighbours = self.world.get_neighbours(x, y)
                 cell = self.world.get(x, y)
-                living_cells = 0
-                for i in neighbours:
-                    if i == 1:
-                        living_cells = living_cells + 1
-                if (cell == 1) and (living_cells == 2):
-                    new_gen.set(x, y, 1)
-                elif (cell == 1) and (living_cells == 3):
-                    new_gen.set(x, y, 1)
-                elif (cell == 0) and (living_cells == 3):
-                    new_gen.set(x, y, 1)
-                else:
-                    new_gen.set(x, y, 0)
-
-        #TODO: Do something to evolve the generation
-        self.world = new_gen
+                amaount_living_cells = self.count_living_cells(neighbours)
+                self.apply_rules(x, y, new_world, cell, amaount_living_cells)
+        self.world = new_world
         return self.world
 
     def get_generation(self):
