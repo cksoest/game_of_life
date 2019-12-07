@@ -37,8 +37,13 @@ class TestSimulator(TestCase):
                                      [0,0,0,0,0,0,0,0,0,0],
                                      [0,0,0,0,0,0,0,0,0,0]])
 
-        functions_output = Simulator(input).update()
-        self.assertEqual(functions_output, expecpted_output)
+        world = World(10)
+        world.world = input
+
+        self.sim.set_world(world)
+        self.sim.update()
+
+        self.assertEquals(expecpted_output.all(), self.sim.world.world.all())
 
     def test_get_generation(self):
         """
