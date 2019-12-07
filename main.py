@@ -4,10 +4,11 @@ import time
 
 # Configuratie
 VISUALISATION=True
+PATTERN = "B31/S23"
 
 if __name__ == "__main__":
     w = World(110)
-    sim = Simulator(w)
+    sim = Simulator(PATTERN, w)
 
     if VISUALISATION:
         vis = Visualisation(sim)
