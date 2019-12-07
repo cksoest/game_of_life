@@ -6,13 +6,19 @@ class Simulator:
     Read https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life for an introduction to Conway's Game of Life.
     """
 
-    def __init__(self, world = None):
+    def __init__(self, pattern=None, world=None):
         """
         Constructor for Game of Life simulator.
 
         :param world: (optional) environment used to simulate Game of Life.
         """
         self.generation = 0
+
+        if pattern == None:
+            self.pattern = "B3/S23"
+        else:
+            self.pattern = pattern
+
         if world == None:
             self.world = World(20)
         else:
@@ -26,16 +32,34 @@ class Simulator:
                 living_cells = living_cells + 1
         return living_cells
 
-    @staticmethod
-    def apply_rules(x, y, new_world, cell, amount_living_cells):
-        if (cell == 1) and (amount_living_cells == 2):
-            new_world.set(x, y, 1)
-        elif (cell == 1) and (amount_living_cells == 3):
-            new_world.set(x, y, 1)
-        elif (cell == 0) and (amount_living_cells == 3):
-            new_world.set(x, y, 1)
-        else:
+    def apply_rules(self, x, y, new_world, cell, amount_living_cells):
+        b, s = [], []
+        splitted = self.pattern.split(sep="/")
+        for char in splitted[0]:
+            if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+                b.append(int(char))
+
+        for char in splitted[1]:
+            if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+                s.append(int(char))
+
+        b_check = True
+        s_check = True
+
+        for num in b:
+            if (cell == 0) and (amount_living_cells == num):
+                new_world.set(x, y, 1)
+                b_check = False
+
+        for num in s:
+            if (cell == 1) and (amount_living_cells == num):
+                new_world.set(x, y, 1)
+                s_check = False
+
+        if b_check and s_check:
             new_world.set(x, y, 0)
+
+        return new_world
 
     def update(self) -> World:
         """
@@ -49,8 +73,8 @@ class Simulator:
             for x in range(self.world.height):
                 neighbours = self.world.get_neighbours(x, y)
                 cell = self.world.get(x, y)
-                amaount_living_cells = self.count_living_cells(neighbours)
-                self.apply_rules(x, y, new_world, cell, amaount_living_cells)
+                amount_living_cells = self.count_living_cells(neighbours)
+                new_world = self.apply_rules(x, y, new_world, cell, amount_living_cells)
         self.world = new_world
         return self.world
 
@@ -78,3 +102,9 @@ class Simulator:
 
         """
         self.world = world
+
+    def set_pattern(self, pattern):
+        self.pattern = pattern
+
+    def get_patern(self):
+        return self.pattern
