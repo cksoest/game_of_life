@@ -1,5 +1,7 @@
 from unittest import TestCase
 from Simulator import *
+from World import *
+import numpy as np
 
 
 class TestSimulator(TestCase):
@@ -13,7 +15,30 @@ class TestSimulator(TestCase):
         """
         Tests that the update functions returns an object of World type.
         """
-        self.assertIsInstance(self.sim.update(), World)
+        input = np.array([[0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,1,1,1,0,0,0],
+                          [0,0,0,0,1,0,1,0,0,0],
+                          [0,0,0,0,1,1,1,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0]])
+
+        expecpted_output = np.array([[0,0,0,0,0,0,0,0,0,0],
+                                     [0,0,0,0,0,0,0,0,0,0],
+                                     [0,0,0,0,0,0,0,0,0,0],
+                                     [0,0,0,0,0,1,0,0,0,0],
+                                     [0,0,0,0,1,0,1,0,0,0],
+                                     [0,0,0,1,0,0,0,1,0,0],
+                                     [0,0,0,0,1,0,1,0,0,0],
+                                     [0,0,0,0,0,1,0,0,0,0],
+                                     [0,0,0,0,0,0,0,0,0,0],
+                                     [0,0,0,0,0,0,0,0,0,0]])
+
+        functions_output = Simulator(input).update()
+        self.assertEqual(functions_output, expecpted_output)
 
     def test_get_generation(self):
         """
