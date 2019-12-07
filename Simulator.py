@@ -25,9 +25,27 @@ class Simulator:
         :return: New state of the world.
         """
         self.generation += 1
+        new_gen = World(self.world.width, self.world.height)
+
+        for y in range(self.world.width):
+            for x in range(self.world.height):
+                neighbours = self.world.get_neighbours(x, y)
+                cell = self.world.get(x, y)
+                living_cells = 0
+                for i in neighbours:
+                    if i == 1:
+                        living_cells = living_cells + 1
+                if (cell == 1) and (living_cells == 2):
+                    new_gen.set(x, y, 1)
+                elif (cell == 1) and (living_cells == 3):
+                    new_gen.set(x, y, 1)
+                elif (cell == 0) and (living_cells == 3):
+                    new_gen.set(x, y, 1)
+                else:
+                    new_gen.set(x, y, 0)
 
         #TODO: Do something to evolve the generation
-
+        self.world = new_gen
         return self.world
 
     def get_generation(self):
