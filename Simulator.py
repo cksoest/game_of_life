@@ -13,12 +13,10 @@ class Simulator:
         :param world: (optional) environment used to simulate Game of Life.
         """
         self.generation = 0
-
         if pattern == None:
             self.pattern = "B3/S23"
         else:
             self.pattern = pattern
-
         if world == None:
             self.world = World(20)
         else:
@@ -33,33 +31,29 @@ class Simulator:
         return living_cells
 
     def apply_rules(self, x, y, new_world, cell, amount_living_cells):
+        bs = self.pattern_to_numbers()
+        change_check = True
+        for i in range(2):
+            for num in bs[i]:
+                if (cell == i) and (amount_living_cells == num):
+                    new_world.set(x, y, 1)
+                    change_check = False
+                    break
+        if change_check:
+            new_world.set(x, y, 0)
+        return new_world
+
+    def pattern_to_numbers(self):
         b, s = [], []
         splitted = self.pattern.split(sep="/")
-        for char in splitted[0]:
-            if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
-                b.append(int(char))
-
-        for char in splitted[1]:
-            if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
-                s.append(int(char))
-
-        b_check = True
-        s_check = True
-
-        for num in b:
-            if (cell == 0) and (amount_living_cells == num):
-                new_world.set(x, y, 1)
-                b_check = False
-
-        for num in s:
-            if (cell == 1) and (amount_living_cells == num):
-                new_world.set(x, y, 1)
-                s_check = False
-
-        if b_check and s_check:
-            new_world.set(x, y, 0)
-
-        return new_world
+        for i in range(2):
+            for char in splitted[i]:
+                if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+                    if i == 0:
+                        b.append(int(char))
+                    elif i == 1:
+                        s.append(int(char))
+        return b, s
 
     def update(self) -> World:
         """
