@@ -40,12 +40,12 @@ class TestSimulator(TestCase):
         world = World(10)
         world.world = input
 
-        self.sim.set_pattern("B31/S23")
+        self.sim.set_pattern("B3/S23/A5")
 
         self.sim.set_world(world)
-        self.sim.update()
+        update = self.sim.update()
 
-        self.assertEquals(expecpted_output.all(), self.sim.world.world.all())
+        self.assertEquals(expecpted_output.all(), update.world.world.all())
 
     def test_get_generation(self):
         """
