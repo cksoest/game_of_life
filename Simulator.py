@@ -12,6 +12,7 @@ class Simulator:
 
         :param world: (optional) environment used to simulate Game of Life.
         """
+        self.first_run = True
         self.generation = 0
         if pattern == None:
             self.pattern = "B3/S23"
@@ -26,34 +27,54 @@ class Simulator:
     def count_living_cells(neigbours):
         living_cells = 0
         for i in neigbours:
-            if i == 1:
+            if i > 0:
                 living_cells = living_cells + 1
         return living_cells
 
     def apply_rules(self, x, y, new_world, cell, amount_living_cells):
-        bs = self.pattern_to_numbers()
+        bsa = self.pattern_to_numbers()
         change_check = True
-        for i in range(2):
-            for num in bs[i]:
-                if (cell == i) and (amount_living_cells == num):
-                    new_world.set(x, y, 1)
-                    change_check = False
-                    break
+
+        for num in bsa[0]:
+            if (cell == 0) and (amount_living_cells == num):
+                new_world.set(x, y, bsa[2])
+                change_check = False
+                break
+
+        for num in bsa[1]:
+            if (cell == 1) and (amount_living_cells == num):
+                new_world.set(x, y, self.world.get(x,y))
+                change_check = False
+                break
+
         if change_check:
-            new_world.set(x, y, 0)
+            old_value = self.world.get(x, y)
+            if old_value == 0:
+                new_world.set(x, y, old_value)
+            else:
+                new_world.set(x, y, old_value-1)
         return new_world
 
     def pattern_to_numbers(self):
-        b, s = [], []
+        b, s, a = [], [], 1
         splitted = self.pattern.split(sep="/")
-        for i in range(2):
+
+        loop_times = 0
+        if len(splitted) == 2:
+            loop_times = 2
+        if len(splitted) == 3:
+            loop_times = 3
+
+        for i in range(loop_times):
             for char in splitted[i]:
                 if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
                     if i == 0:
                         b.append(int(char))
                     elif i == 1:
                         s.append(int(char))
-        return b, s
+                    elif i == 2:
+                        a = int(char)
+        return b, s, a
 
     def update(self) -> World:
         """
@@ -62,6 +83,14 @@ class Simulator:
         :return: New state of the world.
         """
         self.generation += 1
+        if self.first_run:
+            a = self.pattern_to_numbers()[2]
+            for y in range(self.world.width):
+                for x in range(self.world.height):
+                    if self.world.get(x,y) > 0:
+                        self.world.set(x, y, a)
+            self.first_run = False
+
         new_world = World(self.world.width, self.world.height)
         for y in range(self.world.width):
             for x in range(self.world.height):
