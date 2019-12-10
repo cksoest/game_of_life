@@ -29,11 +29,11 @@ class TestSimulator(TestCase):
         expecpted_output = np.array([[0,0,0,0,0,0,0,0,0,0],
                                      [0,0,0,0,0,0,0,0,0,0],
                                      [0,0,0,0,0,0,0,0,0,0],
-                                     [0,0,0,1,1,1,1,1,0,0],
-                                     [0,0,0,1,1,0,1,1,0,0],
-                                     [0,0,0,1,0,0,0,1,0,0],
-                                     [0,0,0,1,1,0,1,1,0,0],
-                                     [0,0,0,1,1,1,1,1,0,0],
+                                     [0,0,0,5,5,5,5,5,0,0],
+                                     [0,0,0,5,4,4,4,5,0,0],
+                                     [0,0,0,5,4,0,4,5,0,0],
+                                     [0,0,0,5,4,4,4,5,0,0],
+                                     [0,0,0,5,5,5,5,5,0,0],
                                      [0,0,0,0,0,0,0,0,0,0],
                                      [0,0,0,0,0,0,0,0,0,0]])
 
@@ -45,7 +45,7 @@ class TestSimulator(TestCase):
         self.sim.set_world(world)
         update = self.sim.update()
 
-        self.assertEquals(expecpted_output.all(), update.world.world.all())
+        self.assertEquals(expecpted_output.all(), update.world.all())
 
     def test_get_generation(self):
         """
