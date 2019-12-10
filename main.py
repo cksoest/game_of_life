@@ -4,7 +4,7 @@ import time
 
 # Configuratie
 VISUALISATION=True
-PATTERN = "B31/S23"
+PATTERN = "B3/S23/A9"
 
 if __name__ == "__main__":
     w = World(110)

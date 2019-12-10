@@ -42,30 +42,20 @@ class Simulator:
                 break
 
         for num in bsa[1]:
-            if (cell == 1) and (amount_living_cells == num):
+            if (cell > 0) and (amount_living_cells == num):
                 new_world.set(x, y, self.world.get(x,y))
                 change_check = False
                 break
 
-        if change_check:
-            old_value = self.world.get(x, y)
-            if old_value == 0:
-                new_world.set(x, y, old_value)
-            else:
-                new_world.set(x, y, old_value-1)
+        if change_check and self.world.get(x, y) != 0:
+            new_world.set(x, y, self.world.get(x, y)-1)
         return new_world
 
     def pattern_to_numbers(self):
         b, s, a = [], [], 1
         splitted = self.pattern.split(sep="/")
 
-        loop_times = 0
-        if len(splitted) == 2:
-            loop_times = 2
-        if len(splitted) == 3:
-            loop_times = 3
-
-        for i in range(loop_times):
+        for i in range(len(splitted)):
             for char in splitted[i]:
                 if char in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
                     if i == 0:
@@ -83,17 +73,14 @@ class Simulator:
         :return: New state of the world.
         """
         self.generation += 1
-        if self.first_run:
-            a = self.pattern_to_numbers()[2]
-            for y in range(self.world.width):
-                for x in range(self.world.height):
-                    if self.world.get(x,y) > 0:
-                        self.world.set(x, y, a)
-            self.first_run = False
-
+        a = self.pattern_to_numbers()[2]
         new_world = World(self.world.width, self.world.height)
         for y in range(self.world.width):
             for x in range(self.world.height):
+                if self.first_run:
+                    if self.world.get(x, y) > 0:
+                        self.world.set(x, y, a)
+                        self.first_run = False
                 neighbours = self.world.get_neighbours(x, y)
                 cell = self.world.get(x, y)
                 amount_living_cells = self.count_living_cells(neighbours)
